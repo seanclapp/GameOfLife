@@ -1,0 +1,29 @@
+package com.seanbot.gameoflife;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.Window;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ */
+public class GOLMainActivity extends Activity {
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super.onCreate(savedInstanceState);
+		setContentView(new GameOfLifeView(this));
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_golmain, menu);
+		return true;
+	}
+	
+}

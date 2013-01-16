@@ -1,0 +1,60 @@
+package com.seanbot.gameoflife;
+
+import com.seanbot.gameoflife.tools.DrawManager;
+
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.view.SurfaceHolder;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        This thread will handle the cell draws
+ * 
+ */
+public class ThreadDraw extends Thread {
+
+	private SurfaceHolder sh;
+	private boolean isRunning = false;
+	private DrawManager drawMgr;
+
+	/**
+	 * Constructor class for ThreadDraw
+	 * 
+	 * @param holder
+	 *            surface holder for the thread
+	 * @param view
+	 */
+	public ThreadDraw(SurfaceHolder holder, GameOfLifeView view) {
+		sh = holder;
+		drawMgr = new DrawManager();
+	}
+
+	/** 
+	 * Sets the running status of the thread
+	 * 
+	 * @param run
+	 */
+	public void setRunning(boolean run) {
+		isRunning = run;
+	}
+
+	public void run() {
+		while (isRunning) {
+			if (sh.getSurface().isValid()) {
+				Canvas canvas = sh.lockCanvas();
+				canvas.drawColor(Color.BLACK);
+				drawMgr.drawCells(CellList.getInstanceOf(), canvas);
+				sh.unlockCanvasAndPost(canvas);
+				try {
+					sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}

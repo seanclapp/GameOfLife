@@ -1,0 +1,391 @@
+package com.seanbot.gameoflife;
+
+import android.app.Activity;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ */
+public class GOLMainActivity extends Activity {
+
+	GameOfLifeView golv;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		golv = new GameOfLifeView(this);
+		setContentView(golv);
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.golmain_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+
+		/**
+		 * This will toggle the random events that occur.
+		 */
+		case R.id.toggle_random_events:
+
+			final Dialog toggleRandomEventDialog = new Dialog(this);
+			LayoutInflater inflaterToggleRandEvents = (LayoutInflater) this
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+			View RandomEventsLayout = inflaterToggleRandEvents.inflate(
+					R.layout.toggle_random_event_layout,
+					(ViewGroup) findViewById(R.id.RandomEventRelativeLayout));
+			toggleRandomEventDialog.setContentView(RandomEventsLayout);
+
+			
+			toggleRandomEventDialog.show();
+			return true;
+			/**
+			 * This will allow the user to select a color for the cells using a
+			 * color wheel type interface. **not implemented**
+			 */
+		case R.id.adjust_color:
+			// call adjust color wheel dialog here
+			final Dialog adjustColorDialog = new Dialog(this);
+			final int startingColor = GameOfLifeView.getInstanceOf()
+					.getStartingTouchColor();
+
+			LayoutInflater inflaterAdjustColor = (LayoutInflater) this
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+			View adjustColorLayout = inflaterAdjustColor.inflate(
+					R.layout.color_picker_layout,
+					(ViewGroup) findViewById(R.id.ColorPickerRootLinearLayout));
+			adjustColorDialog.setContentView(adjustColorLayout);
+
+			SeekBar seekBarRedValue = (SeekBar) adjustColorLayout
+					.findViewById(R.id.seekBarRed);
+			SeekBar seekBarBlueValue = (SeekBar) adjustColorLayout
+					.findViewById(R.id.seekBarBlue);
+			SeekBar seekBarGreenValue = (SeekBar) adjustColorLayout
+					.findViewById(R.id.seekBarGreen);
+
+			final EditText editTextRedValue = (EditText) adjustColorLayout
+					.findViewById(R.id.editTextRedValue);
+			final EditText editTextBlueValue = (EditText) adjustColorLayout
+					.findViewById(R.id.editTextBlueValue);
+			final EditText editTextGreenValue = (EditText) adjustColorLayout
+					.findViewById(R.id.editTextGreenValue);
+
+			final ImageView imageViewColor = (ImageView) adjustColorLayout
+					.findViewById(R.id.imageViewColor);
+			Button btnSelectColor = (Button) adjustColorLayout
+					.findViewById(R.id.buttonSelectColor);
+
+			editTextRedValue.setText("" + ((startingColor >> 16) & 0xFF));
+			editTextBlueValue.setText("" + (startingColor & 0xFF));
+			editTextGreenValue.setText("" + ((startingColor >> 8) & 0xFF));
+			seekBarRedValue.setMax(255);
+			seekBarRedValue.setProgress(Integer.parseInt(editTextRedValue
+					.getText().toString()));
+			seekBarBlueValue.setMax(255);
+			seekBarBlueValue.setProgress(Integer.parseInt(editTextBlueValue
+					.getText().toString()));
+			seekBarGreenValue.setMax(255);
+			seekBarGreenValue.setProgress(Integer.parseInt(editTextGreenValue
+					.getText().toString()));
+
+			imageViewColor.setBackgroundColor(GameOfLifeView.getInstanceOf()
+					.getStartingTouchColor());
+
+			OnSeekBarChangeListener seekBarListenerColorRed = new OnSeekBarChangeListener() {
+
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					// TODO Auto-generated method stub
+					editTextRedValue.setText("" + progress);
+					GameOfLifeView.getInstanceOf().setStartingTouchColor(
+							Color.rgb(Integer.parseInt(editTextRedValue
+									.getText().toString()), Integer
+									.parseInt(editTextGreenValue.getText()
+											.toString()), Integer
+									.parseInt(editTextBlueValue.getText()
+											.toString())));
+					imageViewColor.setBackgroundColor(GameOfLifeView
+							.getInstanceOf().getStartingTouchColor());
+
+				}
+
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+				}
+
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+				}
+
+			};
+
+			seekBarRedValue.setOnSeekBarChangeListener(seekBarListenerColorRed);
+
+			OnSeekBarChangeListener seekBarListenerColorBlue = new OnSeekBarChangeListener() {
+
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					// TODO Auto-generated method stub
+					editTextBlueValue.setText("" + progress);
+					GameOfLifeView.getInstanceOf().setStartingTouchColor(
+							Color.rgb(Integer.parseInt(editTextRedValue
+									.getText().toString()), Integer
+									.parseInt(editTextGreenValue.getText()
+											.toString()), Integer
+									.parseInt(editTextBlueValue.getText()
+											.toString())));
+					// imageViewColor.setColorFilter(GameOfLifeView
+					// .getInstanceOf().getStartingTouchColor(),
+					// Mode.MULTIPLY);
+					imageViewColor.setBackgroundColor(GameOfLifeView
+							.getInstanceOf().getStartingTouchColor());
+				}
+
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+
+				}
+
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+
+				}
+
+			};
+
+			seekBarBlueValue
+					.setOnSeekBarChangeListener(seekBarListenerColorBlue);
+
+			OnSeekBarChangeListener seekBarListenerColorGreen = new OnSeekBarChangeListener() {
+
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					// TODO Auto-generated method stub
+					editTextGreenValue.setText("" + progress);
+					GameOfLifeView.getInstanceOf().setStartingTouchColor(
+							Color.rgb(Integer.parseInt(editTextRedValue
+									.getText().toString()), Integer
+									.parseInt(editTextGreenValue.getText()
+											.toString()), Integer
+									.parseInt(editTextBlueValue.getText()
+											.toString())));
+					// imageViewColor.setColorFilter(GameOfLifeView
+					// .getInstanceOf().getStartingTouchColor(),
+					// Mode.MULTIPLY);
+					imageViewColor.setBackgroundColor(GameOfLifeView
+							.getInstanceOf().getStartingTouchColor());
+				}
+
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+
+				}
+
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					// TODO Auto-generated method stub
+
+				}
+
+			};
+
+			seekBarGreenValue
+					.setOnSeekBarChangeListener(seekBarListenerColorGreen);
+
+			btnSelectColor.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					adjustColorDialog.cancel();
+				}
+
+			});
+
+			adjustColorDialog.show();
+			return true;
+
+			/**
+			 * This will allow the user to adjust the size of the cells using a
+			 * seek bar. Not implemented with seek bar yet. User can increase or
+			 * decrease cells 1 at a time.
+			 */
+		case R.id.adjust_size:
+			// call adjust size dialog here
+			final int startingCellSize = GameOfLifeView.getInstanceOf()
+					.getThreadDraw().getDrawMgr().getCellModifier();
+
+			final Dialog adjustCellSizeDialog = new Dialog(this);
+			LayoutInflater inflaterAdjustSize = (LayoutInflater) this
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+			View adjustSizeLayout = inflaterAdjustSize.inflate(
+					R.layout.size_dialog_layout,
+					(ViewGroup) findViewById(R.id.SizeOfCellsRelativeLayout));
+			adjustCellSizeDialog.setContentView(adjustSizeLayout);
+
+			SeekBar seekBarSizeOfCells = (SeekBar) adjustSizeLayout
+					.findViewById(R.id.seekBarSizeOfCells);
+			final TextView textViewSize = (TextView) adjustSizeLayout
+					.findViewById(R.id.textViewSize);
+			Button doneSizeOfCells = (Button) adjustSizeLayout
+					.findViewById(R.id.buttonDoneSizeOfCells);
+			Button cancelSizeOfCells = (Button) adjustSizeLayout
+					.findViewById(R.id.buttonCancelSizeOfCells);
+
+			seekBarSizeOfCells.setMax(10);
+			seekBarSizeOfCells.setProgress(GameOfLifeView.getInstanceOf()
+					.getThreadDraw().getDrawMgr().getCellModifier());
+			textViewSize.setText("" + startingCellSize);
+
+			OnSeekBarChangeListener sizeSeekBarListener = new OnSeekBarChangeListener() {
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					// textViewSize.setText("" + seekBar.getProgress());
+				}
+
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					// textViewSize.setText("" + seekBar.getProgress());
+				}
+
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					textViewSize.setText("" + seekBar.getProgress());
+					GameOfLifeView.getInstanceOf().getThreadDraw().getDrawMgr()
+							.setCellModifier(seekBar.getProgress());
+				}
+			};
+
+			seekBarSizeOfCells.setOnSeekBarChangeListener(sizeSeekBarListener);
+
+			doneSizeOfCells.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					adjustCellSizeDialog.dismiss();
+				}
+
+			});
+
+			cancelSizeOfCells.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					GameOfLifeView.getInstanceOf().getThreadDraw().getDrawMgr()
+							.setCellModifier(startingCellSize);
+					adjustCellSizeDialog.dismiss();
+				}
+
+			});
+
+			adjustCellSizeDialog.show();
+			return true;
+
+			/**
+			 * This allows the user to adjust the speed of the generations. The
+			 * slider is the value for the delay in milliseconds that the thread
+			 * used to delay the generations.
+			 */
+		case R.id.adjust_speed:
+
+			final int startingCellSpeed = GameOfLifeView.getInstanceOf()
+					.getThreadGen().getSpeed();
+
+			final Dialog adjustCellSpeedDialog = new Dialog(this);
+			LayoutInflater inflaterAdjustSpeed = (LayoutInflater) this
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+			View adjustSpeedLayout = inflaterAdjustSpeed.inflate(
+					R.layout.speed_dialog_layout,
+					(ViewGroup) findViewById(R.id.SpeedOfCellsRelativeLayout));
+			adjustCellSpeedDialog.setContentView(adjustSpeedLayout);
+
+			SeekBar seekBarSpeedOfCells = (SeekBar) adjustSpeedLayout
+					.findViewById(R.id.seekBarSpeedOfCells);
+			final TextView textViewSpeed = (TextView) adjustSpeedLayout
+					.findViewById(R.id.textViewSpeed);
+			Button doneSpeedOfCells = (Button) adjustSpeedLayout
+					.findViewById(R.id.buttonSpeedDone);
+			Button cancelSpeedOfCells = (Button) adjustSpeedLayout
+					.findViewById(R.id.buttonSpeedCancel);
+
+			seekBarSpeedOfCells.setMax(200);
+			seekBarSpeedOfCells.setProgress(startingCellSpeed);
+			textViewSpeed.setText("" + startingCellSpeed);
+
+			OnSeekBarChangeListener speedSeekBarListener = new OnSeekBarChangeListener() {
+				public void onStopTrackingTouch(SeekBar seekBar) {
+					textViewSpeed.setText("" + seekBar.getProgress());
+				}
+
+				public void onStartTrackingTouch(SeekBar seekBar) {
+					textViewSpeed.setText("" + seekBar.getProgress());
+				}
+
+				public void onProgressChanged(SeekBar seekBar, int progress,
+						boolean fromUser) {
+					textViewSpeed.setText("" + seekBar.getProgress());
+					GameOfLifeView.getInstanceOf().getThreadGen()
+							.setSpeed(seekBar.getProgress());
+				}
+			};
+
+			seekBarSpeedOfCells
+					.setOnSeekBarChangeListener(speedSeekBarListener);
+
+			doneSpeedOfCells.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					adjustCellSpeedDialog.dismiss();
+				}
+
+			});
+
+			cancelSpeedOfCells.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					GameOfLifeView.getInstanceOf().getThreadGen()
+							.setSpeed(startingCellSpeed);
+					adjustCellSpeedDialog.dismiss();
+				}
+
+			});
+
+			adjustCellSpeedDialog.show();
+			return true;
+			/**
+			 * Allows the user to turn the sound on/off.
+			 */
+		case R.id.adjust_sounds:
+			
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+}

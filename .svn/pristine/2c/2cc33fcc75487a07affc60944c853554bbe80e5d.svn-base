@@ -1,0 +1,162 @@
+package com.seanbot.gameoflife;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+
+import com.seanbot.gameoflife.tools.ShapeManager;
+import com.seanbot.gameoflife.tools.SoundManager;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        View to hold the animation/threads/touch events etc.
+ * 
+ */
+public class GameOfLifeView extends SurfaceView implements
+		SurfaceHolder.Callback {
+
+	volatile int startingTouchColor;
+	volatile boolean touched = false;
+
+	// the max allowed touch inputs
+	final int MAXPOINTS = 5;
+
+	private int screenWidth, screenHeight;
+	private DisplayMetrics metrics;
+
+	float[] xTouch = new float[MAXPOINTS];
+	float[] yTouch = new float[MAXPOINTS];
+	boolean[] isTouch = new boolean[MAXPOINTS];
+
+	private static GameOfLifeView golView;
+	public ThreadDraw threadDraw;
+	public ThreadGeneration threadGen;
+
+	public SoundManager soundManager;
+	private CellList cellList;
+
+	private ShapeManager shapeManager;
+
+	public CellList getCellList() {
+		return cellList;
+	}
+
+	public GameOfLifeView(Context context) {
+		super(context);
+		getHolder().addCallback(this);
+		golView = this;
+		soundManager = new SoundManager();
+		soundManager.mPlayer.start();
+		cellList = new CellList();
+		threadDraw = new ThreadDraw(getHolder(), this);
+		threadGen = new ThreadGeneration(this);
+
+		metrics = this.getResources().getDisplayMetrics();
+		screenWidth = metrics.widthPixels;
+		screenHeight = metrics.heightPixels;
+
+		shapeManager = new ShapeManager();
+
+	}
+
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+	}
+
+	public void surfaceCreated(SurfaceHolder holder) {
+		threadDraw.setRunning(true);
+		threadDraw.start();
+		threadGen.setRunning(true);
+		threadGen.start();
+	}
+
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		boolean retry = true;
+		threadDraw.setRunning(false);
+		while (retry) {
+			try {
+				threadDraw.join();
+				retry = false;
+			} catch (InterruptedException e) {
+
+			}
+		}
+	}
+
+	public static synchronized GameOfLifeView getInstanceOf() {
+		return golView;
+	}
+
+	public boolean onTouchEvent(MotionEvent event) {
+
+		int pointerIndex = ((event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT);
+		int pointerId = event.getPointerId(pointerIndex);
+		int action = (event.getAction() & MotionEvent.ACTION_MASK);
+		int pointCnt = event.getPointerCount();
+
+		try {
+			if (pointCnt <= MAXPOINTS) {
+				if (pointerIndex <= MAXPOINTS - 1) {
+					int id = 0;
+					for (int i = 0; i < pointCnt; i++) {
+
+						id = event.getPointerId(i);
+						xTouch[id] = event.getX(i);
+						yTouch[id] = event.getY(i);
+
+					}
+
+					switch (action) {
+					case MotionEvent.ACTION_DOWN:
+
+						try {
+							isTouch[pointerId] = true;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						// set color depending on the touched quadrant
+						if (xTouch[id] < screenWidth / 2
+								&& yTouch[id] < screenHeight / 2)
+							startingTouchColor = Color.rgb(178, 34, 34);
+						else if (xTouch[id] > screenWidth / 2
+								&& yTouch[id] < screenHeight / 2)
+							startingTouchColor = Color.rgb(0, 100, 0);
+						else if (xTouch[id] < screenWidth / 2
+								&& yTouch[id] > screenHeight / 2)
+							startingTouchColor = Color.rgb(190, 180, 20);
+						else if (xTouch[id] > screenWidth / 2
+								&& yTouch[id] > screenHeight / 2)
+							startingTouchColor = Color.rgb(0, 0, 50);
+						break;
+					case MotionEvent.ACTION_POINTER_DOWN:
+						isTouch[pointerId] = true;
+						break;
+					case MotionEvent.ACTION_MOVE:
+						isTouch[pointerId] = true;
+						break;
+					case MotionEvent.ACTION_UP:
+						isTouch[pointerId] = false;
+						break;
+					case MotionEvent.ACTION_POINTER_UP:
+						isTouch[pointerId] = false;
+						break;
+					case MotionEvent.ACTION_CANCEL:
+						isTouch[pointerId] = false;
+						break;
+					default:
+						isTouch[pointerId] = false;
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+}

@@ -1,0 +1,36 @@
+//package com.seanbot.gameoflife;
+//
+//import android.content.Context;
+//import android.view.SurfaceHolder;
+//import android.view.SurfaceView;
+//
+//public class TitleScreenView extends SurfaceView implements
+//		SurfaceHolder.Callback {
+//
+//	private CellList titleScreenCellList;
+//	private int screenWidth;
+//	private int screenHeight;
+//
+//	public TitleScreenView(Context context) {
+//		super(context);
+//		titleScreenCellList = new CellList();
+//		screenWidth = titleScreenCellList.getInstanceOf().getWidth();
+//		screenHeight = titleScreenCellList.getInstanceOf().getHeight();
+//	}
+//
+//	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	public void surfaceCreated(SurfaceHolder arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//	public void surfaceDestroyed(SurfaceHolder arg0) {
+//		// TODO Auto-generated method stub
+//
+//	}
+//
+//}

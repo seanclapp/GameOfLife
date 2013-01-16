@@ -1,0 +1,44 @@
+package com.seanbot.gameoflife.tools;
+
+import com.seanbot.gameoflife.Cell;
+import com.seanbot.gameoflife.CellList;
+
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        This handles all the drawing on screen.
+ * 
+ */
+public class DrawManager {
+
+	public DrawManager() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public void drawCells(CellList cl, Canvas canvas) {
+		// draw what you will.
+		Paint paint = new Paint();
+		for (int n = 0; n < cl.getColumns() * cl.getRows(); n++) {
+			Cell c = cl.getArrayListOfCells().get(n);
+			if (c.getIsAlive() == 1) {
+				paint.setColor(cl.getArrayListOfCells().get(n).getCellColor());
+				RectF rect = new RectF(c.getxPos() - 7, c.getyPos() - 7	,
+						c.getxPos() + 7, c.getyPos() + 7);
+				canvas.drawRoundRect(rect, 2, 2, paint);
+			}
+
+			if (c.getIsAlive() == 0 && c.getFadeOutNum() > 1) {
+				paint.setColor(c.getCellColor());
+				RectF rect = new RectF(c.getxPos() - 7, c.getyPos() - 7,
+						c.getxPos() + 7, c.getyPos() + 7);
+				canvas.drawRoundRect(rect, 2, 2, paint);
+			}
+		}
+	}
+}

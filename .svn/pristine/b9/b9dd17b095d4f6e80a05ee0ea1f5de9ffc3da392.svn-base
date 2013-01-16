@@ -1,0 +1,17 @@
+package com.seanbot.gameoflife;
+
+import android.content.Context;
+
+public class TitleScreenView {
+	
+	private CellList titleScreenCellList;
+	private int screenWidth;
+	private int screenHeight;
+
+	public TitleScreenView(Context context) {
+		titleScreenCellList = new CellList();
+		screenWidth = titleScreenCellList.getInstanceOf().getWidth();
+		screenHeight = titleScreenCellList.getInstanceOf().getHeight();
+	}
+
+}

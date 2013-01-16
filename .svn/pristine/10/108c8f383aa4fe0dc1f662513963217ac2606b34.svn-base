@@ -1,0 +1,156 @@
+package com.seanbot.gameoflife.tools;
+
+import java.util.HashMap;
+import java.util.Random;
+
+import com.seanbot.gameoflife.GameOfLifeView;
+import com.seanbot.gameoflife.R;
+import com.seanbot.gameoflife.R.raw;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        Sound manager is responsible for building the sound library and
+ *        handling play events.
+ * 
+ */
+public class SoundManager {
+
+	private SoundPool soundPool;
+	private HashMap<Integer, Integer> soundsMap;
+	public MediaPlayer mPlayer;
+
+	final int SOUND_F = 1;
+	final int SOUND_FF = 2;
+	final int SOUND_G = 3;
+	final int SOUND_GG = 4;
+	final int SOUND_A = 5;
+	final int SOUND_AA = 6;
+	final int SOUND_C = 7;
+	final int SOUND_CC = 8;
+	final int SOUND_CCC = 9;
+	final int SOUND_CCCC = 10;
+	final int SOUND_D = 11;
+	final int SOUND_DD = 12;
+	final int SOUND_DDD = 13;
+	final int SOUND_DDDD = 14;
+	final int SOUND_BG = 15;
+
+	@SuppressLint("UseSparseArrays")
+	public SoundManager() {
+		soundsMap = new HashMap<Integer, Integer>();
+		soundPool = new SoundPool(12, AudioManager.STREAM_MUSIC, 0);
+		loadSounds(GameOfLifeView.getInstanceOf().getContext(), soundPool);
+		mPlayer = new MediaPlayer();
+		mPlayer = MediaPlayer.create(GameOfLifeView.getInstanceOf()
+				.getContext(), R.raw.bg1);
+	}
+
+	/**
+	 * 
+	 * @param context
+	 * @param soundPool
+	 */
+	private void loadSounds(Context context, SoundPool soundPool) {
+		soundsMap.put(SOUND_F, soundPool.load(context, R.raw.f, 1));
+		soundsMap.put(SOUND_FF, soundPool.load(context, R.raw.ff, 1));
+		soundsMap.put(SOUND_G, soundPool.load(context, R.raw.g, 1));
+		soundsMap.put(SOUND_GG, soundPool.load(context, R.raw.gg, 1));
+		soundsMap.put(SOUND_A, soundPool.load(context, R.raw.a, 1));
+		soundsMap.put(SOUND_AA, soundPool.load(context, R.raw.aa, 1));
+		soundsMap.put(SOUND_C, soundPool.load(context, R.raw.c, 1));
+		soundsMap.put(SOUND_CC, soundPool.load(context, R.raw.cc, 1));
+		soundsMap.put(SOUND_CCC, soundPool.load(context, R.raw.ccc, 1));
+		soundsMap.put(SOUND_CCCC, soundPool.load(context, R.raw.cccc, 1));
+		soundsMap.put(SOUND_D, soundPool.load(context, R.raw.d, 1));
+		soundsMap.put(SOUND_DD, soundPool.load(context, R.raw.dd, 1));
+		soundsMap.put(SOUND_DDD, soundPool.load(context, R.raw.ddd, 1));
+		soundsMap.put(SOUND_DDDD, soundPool.load(context, R.raw.dddd, 1));
+	}
+
+	/**
+	 * Use this to play a random sound from the sound pool
+	 */
+	public void playRandomSound() {
+		Random r = new Random();
+		int sound = r.nextInt(13);
+		soundPool.play(soundsMap.get(sound+1), (float) 1.0, (float) 1.0, 1,
+				0, 1);
+	}
+
+	/**
+	 * Use this to play a specific sound
+	 * 
+	 * @param sound
+	 *            integer value of the sound to play
+	 */
+	public void playSound(int sound) {
+		switch (sound) {
+		case 0:
+			soundPool.play(soundsMap.get(SOUND_A), (float) 1.0, (float) 1.0, 1,
+					0, 1);
+			break;
+		case 1:
+			soundPool.play(soundsMap.get(SOUND_AA), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 2:
+			soundPool.play(soundsMap.get(SOUND_C), (float) 1.0, (float) 1.0, 1,
+					0, 1);
+			break;
+		case 3:
+			soundPool.play(soundsMap.get(SOUND_CC), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 4:
+			soundPool.play(soundsMap.get(SOUND_CCC), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 5:
+			soundPool.play(soundsMap.get(SOUND_CCCC), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 6:
+			soundPool.play(soundsMap.get(SOUND_D), (float) 1.0, (float) 1.0, 1,
+					0, 1);
+			break;
+		case 7:
+			soundPool.play(soundsMap.get(SOUND_DD), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 8:
+			soundPool.play(soundsMap.get(SOUND_DDD), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 9:
+			soundPool.play(soundsMap.get(SOUND_DDDD), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 10:
+			soundPool.play(soundsMap.get(SOUND_F), (float) 1.0, (float) 1.0, 1,
+					0, 1);
+			break;
+		case 11:
+			soundPool.play(soundsMap.get(SOUND_FF), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		case 12:
+			soundPool.play(soundsMap.get(SOUND_G), (float) 1.0, (float) 1.0, 1,
+					0, 1);
+			break;
+		case 13:
+			soundPool.play(soundsMap.get(SOUND_GG), (float) 1.0, (float) 1.0,
+					1, 0, 1);
+			break;
+		}
+	}
+
+}

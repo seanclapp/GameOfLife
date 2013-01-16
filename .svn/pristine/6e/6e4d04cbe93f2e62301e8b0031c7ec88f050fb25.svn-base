@@ -1,0 +1,24 @@
+Conway's Game of Life Interactive Sound Design Application
+@author Sean Clapp
+@email: seanclapp@gmail.com
+
+
+**Dependencies**
+This is an application for Android Devices. 
+Please make sure you have all the necessary installations to support android development.
+
+
+**Description**
+I'm terrible at descriptions.
+
+This application is an interactive Game of Life simulation. 
+It uses Conway's original algorithm and produces visuals that can be manipulated via touch. 
+As a user touches the screen "gliders" are created.
+As cells/objects are created, sounds are played. (Think soundscape like sounds)
+
+
+
+**To Be Completed**
+1. Shape creation based on a 2d array of live/dead cells
+2. More interactivity with the sound
+3. ?

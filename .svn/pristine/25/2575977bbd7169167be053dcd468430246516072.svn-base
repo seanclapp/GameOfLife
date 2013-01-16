@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/SizeOfCellsRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewSmaller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/seekBar1"
+        android:text="Smaller" />
+
+    <TextView
+        android:id="@+id/textViewLarger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/textView1"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_alignParentRight="true"
+        android:text="Larger" />
+
+    <TextView
+        android:id="@+id/textViewSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar1"
+        android:layout_centerHorizontal="true" 
+        android:text="0"/>
+
+    <SeekBar
+        android:id="@+id/seekBarSizeOfCells"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textViewSmaller" />
+
+    <Button
+        android:id="@+id/buttonDoneSizeOfCells"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/seekBarSizeOfCells"
+        android:text="Done" />
+
+    <Button
+        android:id="@+id/buttonCancelSizeOfCells"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/buttonDoneSizeOfCells"
+        android:layout_alignBottom="@+id/buttonDoneSizeOfCells"
+        android:layout_alignParentRight="true"
+        android:text="Cancel" />
+
+</RelativeLayout>

@@ -1,0 +1,20 @@
+package com.seanbot.gameoflife;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+public class TitleScreen extends Activity {
+
+	public TitleScreen() {
+		// TODO Auto-generated constructor stub
+	}
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	
+	    // TODO Auto-generated method stub
+	}
+
+}

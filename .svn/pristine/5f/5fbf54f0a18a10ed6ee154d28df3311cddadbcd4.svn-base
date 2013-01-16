@@ -1,0 +1,149 @@
+package com.seanbot.gameoflife;
+
+import java.util.Random;
+
+import com.seanbot.gameoflife.tools.ShapeManager;
+
+import android.graphics.Color;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        This thread handles the generation running and building shapes on
+ *        touch.
+ */
+public class ThreadGeneration extends Thread {
+	private boolean isRunning = false;
+	private boolean randomShapesEnabled = false;
+
+
+	private GameOfLifeView golView;
+	private ShapeManager shapeMgr;
+
+	private int screenWidth;
+	private int screenHeight;
+	
+	private int speed;
+
+	public ThreadGeneration(GameOfLifeView view) {
+		golView = view;
+		shapeMgr = new ShapeManager();
+		screenWidth = GameOfLifeView.getInstanceOf().getCellList().getWidth();
+		screenHeight = GameOfLifeView.getInstanceOf().getCellList().getHeight();
+		speed = 125;
+	}
+	
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+
+	public void setRunning(boolean run) {
+		isRunning = run;
+	}
+
+	private int getRandomColor() {
+		Random r = new Random();
+		return Color.rgb(r.nextInt(256), r.nextInt(256), r.nextInt(256));
+	}
+
+	public void run() {
+		while (isRunning) {
+			
+			if(randomShapesEnabled){
+			buildRandomShapes();
+			}
+			
+			if (golView.isTouch[0]) {
+				shapeMgr.buildShape(shapeMgr.glider3, golView.xTouch[0],
+						golView.yTouch[0], golView.startingTouchColor); //use golView.startingTouchColor to do quadrants
+				golView.soundManager.playRandomSound();
+			}
+
+			if (golView.isTouch[1]) {
+				shapeMgr.buildShape(shapeMgr.glider3, golView.xTouch[1],
+						golView.yTouch[1], golView.startingTouchColor);
+				golView.soundManager.playRandomSound();
+			}
+
+			if (golView.isTouch[2]) {
+				shapeMgr.buildShape(shapeMgr.glider3, golView.xTouch[2],
+						golView.yTouch[2], golView.startingTouchColor);
+			}
+
+			if (golView.isTouch[3]) {
+				shapeMgr.buildShape(shapeMgr.glider3, golView.xTouch[3],
+						golView.yTouch[3], golView.startingTouchColor);
+			}
+
+			if (golView.isTouch[4]) {
+				shapeMgr.buildShape(shapeMgr.glider3, golView.xTouch[4],
+						golView.yTouch[4], golView.startingTouchColor);
+			}
+
+			golView.getCellList().getCm()
+					.runGeneration(GameOfLifeView.getInstanceOf().getCellList());
+			try {
+				sleep(speed);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void setRandomShapesEnabled(boolean randomShapesEnabled) {
+		this.randomShapesEnabled = randomShapesEnabled;
+	}
+	
+	public boolean isRandomShapesEnabled() {
+		return randomShapesEnabled;
+	}
+
+	public void buildRandomShapes() {
+		Random r = new Random();
+		if (r.nextInt(1500) == 1342) {
+			for(int i = 0; i < 3; i++){
+			shapeMgr.buildShape(shapeMgr.pulsar, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+			}
+		}
+		if (r.nextInt(300) == 12) {
+			shapeMgr.buildShape(shapeMgr.ship, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+		}
+		if (r.nextInt(142) == 3) {
+			shapeMgr.buildShape(shapeMgr.glider1, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+		}
+		if (r.nextInt(142) == 4) {
+			shapeMgr.buildShape(shapeMgr.glider2, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+		}
+		if (r.nextInt(142) == 5) {
+			shapeMgr.buildShape(shapeMgr.glider3, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+		}
+		if (r.nextInt(142) == 6) {
+			shapeMgr.buildShape(shapeMgr.glider4, r.nextInt(screenWidth - 50),
+					r.nextInt(screenHeight - 50), getRandomColor());
+			golView.soundManager.playRandomSound();
+			golView.soundManager.playRandomSound();
+		}
+	}
+}

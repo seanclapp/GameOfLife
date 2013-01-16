@@ -1,0 +1,321 @@
+package com.seanbot.gameoflife.tools;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import android.graphics.Color;
+
+import com.seanbot.gameoflife.Cell;
+import com.seanbot.gameoflife.CellList;
+
+/**
+ * 
+ * @author Sean Clapp
+ * @email seanclapp@gmail.com
+ * 
+ *        CellManager will house the methods that will directly manipulate the
+ *        CellList according to Conway's Game of Life. Any manipulation to the
+ *        CellList will take place here. So where you need to manipulate the
+ *        CellList, build an instance of this object and use these methods.
+ */
+public class CellManager {
+
+	public CellManager() {
+
+	}
+
+	/**
+	 * This will handle the initial population of the cell list with cells
+	 */
+	public void populateCellList() {
+		CellList cl = CellList.getInstanceOf();
+		ArrayList<Cell> arrayListOfCells = cl.getArrayListOfCells();
+		int size = cl.getSIZEMOD();
+		int rows = cl.getRows();
+		int cols = cl.getColumns();
+		int n = 0;
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				arrayListOfCells.add(new Cell((j * size + size / 2),
+						(i * size + size / 2), i, j));
+				arrayListOfCells.get(n).setxPos(
+						j * cl.getSIZEMOD() + cl.getSIZEMOD() / 2);
+				arrayListOfCells.get(n).setyPos(
+						i * cl.getSIZEMOD() + cl.getSIZEMOD() / 2);
+				arrayListOfCells.get(n).setCellColor(Color.BLACK);
+				arrayListOfCells.get(n).setCellRowNum(i);
+				arrayListOfCells.get(n).setCellColNum(j);
+				n++;
+			}
+		}
+	}
+
+	/**
+	 * Runs a generation according to conway's game of life algorithm
+	 * 
+	 * @param cl
+	 *            the initial cell list to perform the generation calculation on
+	 */
+	public void runGeneration(CellList cl) {
+		// CellList cl = CellList.getCellList();
+		Random r = new Random();
+		int neighborCount = 0;
+		int[] aliveArray = new int[cl.getRows() * cl.getColumns()];
+		ArrayList<Cell> arrayListOfCells = cl.getArrayListOfCells();
+
+		int n = 0;
+
+		for (int i = 0; i < cl.getRows(); i++) {
+			for (int j = 0; j < cl.getColumns(); j++) {
+
+				neighborCount = getNeighborCount(cl, n);
+				aliveArray[n] = arrayListOfCells.get(n).getIsAlive();
+
+				// kill the cell if it's alive and if there are less than 2
+				// neighbors or greater than three neighbors
+				// else if, it will create a new cell if there is no cell and
+				// there are 3 neighbors surrounding it
+				if (cl.getCellAt(i, j).getIsAlive() == 1) {
+					if (neighborCount < 2 || neighborCount > 3) {
+						aliveArray[n] = 0;
+						// start fadeout for dead cells
+						arrayListOfCells.get(n).setFadeOutNum(5);
+					}
+				} else if (cl.getCellAt(i, j).getIsAlive() == 0) {
+					if (neighborCount == 3) {
+						// make the cell alive
+						aliveArray[n] = 1;
+						// get rid of any fade out numbers for the newly created
+						// cells.
+						arrayListOfCells.get(n).setFadeOutNum(0);
+						// set color depending on neighbors...
+						arrayListOfCells
+								.get(n)
+								.setCellColor(
+										getNeighborAverageColor(cl, n,
+												neighborCount, arrayListOfCells
+														.get(n).getCellColor()));
+					}
+				}
+				n++;
+			}
+		}
+
+		//set cells to be alive if needed
+		for (int i = 0; i < cl.getRows() * cl.getColumns(); i++) {
+			arrayListOfCells.get(i).setIsAlive(aliveArray[i]);
+		}
+
+		// if a cell is fading out, correct the color to show according
+		// to how far along the fadeout process is
+		for (int i = 0; i < cl.getRows(); i++) {
+			for (int j = 0; j < cl.getColumns(); j++) {
+				if (cl.getCellAt(i, j).getFadeOutNum() > 0
+						&& cl.getCellAt(i, j).getIsAlive() == 0) {
+					cl.getCellAt(i, j).setFadeOutNum(
+							cl.getCellAt(i, j).getFadeOutNum() - 1);
+					cl.getCellAt(i, j).setCellColor(
+							combineColors(cl.getCellAt(i, j).getCellColor(),
+									Color.BLACK));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Gets the neighbor count
+	 * 
+	 * @param cl
+	 *            cell list to count neighbors for
+	 * @param n
+	 *            the cell number to get neighbor count for
+	 * @return
+	 */
+	public int getNeighborCount(CellList cl, int n) {
+		int count = 0;
+		int x = 0;
+		int y = 0;
+		ArrayList<Cell> arrayListOfCells = cl.getArrayListOfCells();
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum();
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum();
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum();
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum();
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				count++;
+		}
+
+		return count;
+	}
+
+	/**
+	 * Gets the average color of surrounding neighbors
+	 * 
+	 * @param cl
+	 *            cell list to use for the calculations
+	 * @param n
+	 *            cell number to perform the average color
+	 * @param neighbors
+	 *            the number of alive neighbors
+	 * @param origColor
+	 *            the origina color of the cell
+	 * @return
+	 */
+	public int getNeighborAverageColor(CellList cl, int n, int neighbors,
+			int origColor) {
+		ArrayList<Cell> arrayListOfCells = cl.getArrayListOfCells();
+		int colorTotal = 0;
+		int x = 0;
+		int y = 0;
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum();
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum();
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum();
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum();
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() - 1;
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum() - 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		x = arrayListOfCells.get(n).getCellRowNum() + 1;
+		y = arrayListOfCells.get(n).getCellColNum() + 1;
+
+		if (x >= 0 && y >= 0 && x < cl.getRows() && y < cl.getColumns()) {
+			if (cl.getCellAt(x, y).getIsAlive() == 1)
+				colorTotal += cl.getCellAt(x, y).getCellColor();
+		}
+
+		if (neighbors != 0)
+			return colorTotal / neighbors;
+		else
+			return origColor;
+	}
+
+	/**
+	 * Mostly handles fade out coloring. But can handle other color combinations
+	 * if needed.
+	 * 
+	 * @param color1
+	 *            integer value of the first color to combine
+	 * @param color2
+	 *            integer value of the second color to combine
+	 * @return
+	 */
+	public int combineColors(int color1, int color2) {
+		int red1, green1, blue1;
+		red1 = Color.red(color1);
+		green1 = Color.green(color1);
+		blue1 = Color.blue(color1);
+
+		int red2, green2, blue2;
+		red2 = Color.red(color2);
+		green2 = Color.green(color2);
+		blue2 = Color.blue(color2);
+
+		return Color.rgb((red1 + red2) / 2, (green1 + green2) / 2,
+				(blue1 + blue2) / 2);
+	}
+}

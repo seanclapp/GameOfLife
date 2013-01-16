@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ColorPickerRootLinearLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textViewRedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Red" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <SeekBar
+            android:id="@+id/seekBarRed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/editTextRedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="0" >
+
+            <requestFocus />
+        </EditText>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewGreenLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Green" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <SeekBar
+            android:id="@+id/seekBarGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/editTextGreenValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="0" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewBlueLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Blue" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <SeekBar
+            android:id="@+id/seekBarBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/editTextBlueValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false"
+            android:ems="10"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:text="0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/buttonSelectColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Color" />
+
+        <ImageView
+            android:id="@+id/imageViewColor"
+            android:layout_width="fill_parent"
+            android:layout_height="40dip" />
+
+    </LinearLayout>
+
+</LinearLayout>
